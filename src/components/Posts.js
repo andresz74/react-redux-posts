@@ -1,16 +1,17 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { fetchPosts } from '../actions/postActions';
 
-const Posts = () => {
-	const [posts, setPosts] = React.useState([]);
+const Posts = ({ fetchPosts, posts, newPost }) => {
 	React.useEffect(() => {
-		fetch('https://jsonplaceholder.typicode.com/posts')
-			.then(res => res.json())
-			.then(data => setPosts(data));
+		fetchPosts();
 	}, []);
+
 	return !posts ? (
 		<p>Loading...</p>
 	) : (
 		<>
+			<h2>Posts</h2>
 			{posts.map(post => {
 				return (
 					<div key={post.id}>
@@ -24,4 +25,9 @@ const Posts = () => {
 	);
 };
 
-export default Posts;
+const mapStateProps = state => ({
+	posts: state.posts.items,
+	newPost: state.posts.item,
+});
+
+export default connect(mapStateProps, { fetchPosts })(Posts);
